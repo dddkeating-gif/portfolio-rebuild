@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Navigation from '@/components/Navigation';
+import CustomCursor from '@/components/CustomCursor';
 import ParticleBackground from '@/components/ParticleBackground';
 
 const inter = Inter({
@@ -27,16 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
+        <CustomCursor />
         <ParticleBackground />
         <Navigation />
-        <main className="relative z-10 min-h-screen pt-20">
+        <main className="relative z-10">
           {children}
         </main>
-        <footer className="relative z-10 border-t border-black/5 py-8 mt-20">
-          <div className="max-w-7xl mx-auto px-6 text-center text-black/30 text-sm">
-            © {new Date().getFullYear()} Jake Vallante. All rights reserved.
-          </div>
-        </footer>
       </body>
     </html>
   );

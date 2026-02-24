@@ -3,10 +3,10 @@
 import { useRef, useEffect, useCallback } from 'react';
 import * as THREE from 'three';
 
-const PARTICLE_COUNT = 1800;
-const MOUSE_RADIUS = 150;
-const RETURN_SPEED = 0.02;
-const MOUSE_FORCE = 0.08;
+const PARTICLE_COUNT = 1400;
+const MOUSE_RADIUS = 160;
+const RETURN_SPEED = 0.018;
+const MOUSE_FORCE = 0.07;
 
 export default function ParticleBackground() {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -20,26 +20,21 @@ export default function ParticleBackground() {
 
     useEffect(() => {
         if (!containerRef.current) return;
-
         const container = containerRef.current;
         const width = window.innerWidth;
         const height = window.innerHeight;
 
-        // Scene setup
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
         camera.position.z = 300;
 
-        const renderer = new THREE.WebGLRenderer({
-            antialias: true,
-            alpha: true,
-        });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setClearColor(0xffffff, 1);
+        // Breeze light background
+        renderer.setClearColor(0xe9eef4, 1);
         container.appendChild(renderer.domElement);
 
-        // Create particles
         const geometry = new THREE.BufferGeometry();
         const positions = new Float32Array(PARTICLE_COUNT * 3);
         const originalPositions = new Float32Array(PARTICLE_COUNT * 3);
@@ -47,38 +42,32 @@ export default function ParticleBackground() {
         const sizes = new Float32Array(PARTICLE_COUNT);
         const colors = new Float32Array(PARTICLE_COUNT * 3);
 
-        // Light-theme palette — soft blues, lavenders, slate grays
+        // Breeze palette particles
         const palette = [
-            new THREE.Color(0x4a9eff), // blue
-            new THREE.Color(0x7b68ee), // medium slate blue
-            new THREE.Color(0x94a3b8), // slate gray
-            new THREE.Color(0xa78bfa), // violet
-            new THREE.Color(0x60a5fa), // light blue
-            new THREE.Color(0xc4b5fd), // light violet
-            new THREE.Color(0x6366f1), // indigo
+            new THREE.Color(0x326789), // dark teal
+            new THREE.Color(0x79a5c8), // mid blue
+            new THREE.Color(0x4a7fa5), // blend
+            new THREE.Color(0x5b8db5), // blend
+            new THREE.Color(0xe65c4f), // coral accent (sparse)
+            new THREE.Color(0x92b8d6), // light teal
         ];
 
         for (let i = 0; i < PARTICLE_COUNT; i++) {
             const i3 = i * 3;
-            const x = (Math.random() - 0.5) * width * 0.8;
-            const y = (Math.random() - 0.5) * height * 0.8;
-            const z = (Math.random() - 0.5) * 200;
+            positions[i3] = (Math.random() - 0.5) * width * 0.85;
+            positions[i3 + 1] = (Math.random() - 0.5) * height * 0.85;
+            positions[i3 + 2] = (Math.random() - 0.5) * 200;
 
-            positions[i3] = x;
-            positions[i3 + 1] = y;
-            positions[i3 + 2] = z;
+            originalPositions[i3] = positions[i3];
+            originalPositions[i3 + 1] = positions[i3 + 1];
+            originalPositions[i3 + 2] = positions[i3 + 2];
 
-            originalPositions[i3] = x;
-            originalPositions[i3 + 1] = y;
-            originalPositions[i3 + 2] = z;
-
-            velocities[i3] = 0;
-            velocities[i3 + 1] = 0;
-            velocities[i3 + 2] = 0;
-
+            velocities[i3] = velocities[i3 + 1] = velocities[i3 + 2] = 0;
             sizes[i] = Math.random() * 3 + 0.5;
 
-            const color = palette[Math.floor(Math.random() * palette.length)];
+            // Coral particles are rare (~8%)
+            const colorIdx = Math.random() < 0.08 ? 4 : Math.floor(Math.random() * 4);
+            const color = palette[colorIdx];
             colors[i3] = color.r;
             colors[i3 + 1] = color.g;
             colors[i3 + 2] = color.b;
@@ -88,7 +77,6 @@ export default function ParticleBackground() {
         geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-        // Shader material for soft particles on white
         const material = new THREE.ShaderMaterial({
             uniforms: {
                 uTime: { value: 0 },
@@ -99,14 +87,12 @@ export default function ParticleBackground() {
         attribute vec3 color;
         varying vec3 vColor;
         varying float vOpacity;
-        uniform float uTime;
         uniform float uPixelRatio;
-
         void main() {
           vColor = color;
           vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
           float depth = -mvPosition.z / 300.0;
-          vOpacity = mix(0.55, 0.08, clamp(depth, 0.0, 1.0));
+          vOpacity = mix(0.5, 0.08, clamp(depth, 0.0, 1.0));
           gl_PointSize = size * uPixelRatio * (200.0 / -mvPosition.z);
           gl_PointSize = max(gl_PointSize, 1.0);
           gl_Position = projectionMatrix * mvPosition;
@@ -115,7 +101,6 @@ export default function ParticleBackground() {
             fragmentShader: `
         varying vec3 vColor;
         varying float vOpacity;
-
         void main() {
           float d = length(gl_PointCoord - vec2(0.5));
           if (d > 0.5) discard;
@@ -131,7 +116,6 @@ export default function ParticleBackground() {
         const particles = new THREE.Points(geometry, material);
         scene.add(particles);
 
-        // Animation loop
         let time = 0;
         const animate = () => {
             animationIdRef.current = requestAnimationFrame(animate);
@@ -140,15 +124,13 @@ export default function ParticleBackground() {
 
             const posAttr = geometry.attributes.position as THREE.BufferAttribute;
             const posArray = posAttr.array as Float32Array;
-
-            const mouseWorldX = mouseRef.current.x * width * 0.4;
-            const mouseWorldY = mouseRef.current.y * height * 0.4;
+            const mx = mouseRef.current.x * width * 0.4;
+            const my = mouseRef.current.y * height * 0.4;
 
             for (let i = 0; i < PARTICLE_COUNT; i++) {
                 const i3 = i * 3;
-
-                const dx = posArray[i3] - mouseWorldX;
-                const dy = posArray[i3 + 1] - mouseWorldY;
+                const dx = posArray[i3] - mx;
+                const dy = posArray[i3 + 1] - my;
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (dist < MOUSE_RADIUS) {
@@ -160,28 +142,23 @@ export default function ParticleBackground() {
                 velocities[i3] += (originalPositions[i3] - posArray[i3]) * RETURN_SPEED;
                 velocities[i3 + 1] += (originalPositions[i3 + 1] - posArray[i3 + 1]) * RETURN_SPEED;
                 velocities[i3 + 2] += (originalPositions[i3 + 2] - posArray[i3 + 2]) * RETURN_SPEED;
-
                 velocities[i3] *= 0.92;
                 velocities[i3 + 1] *= 0.92;
                 velocities[i3 + 2] *= 0.92;
-
-                velocities[i3] += Math.sin(time * 2 + i * 0.01) * 0.03;
-                velocities[i3 + 1] += Math.cos(time * 1.5 + i * 0.01) * 0.03;
-
+                velocities[i3] += Math.sin(time * 2 + i * 0.01) * 0.025;
+                velocities[i3 + 1] += Math.cos(time * 1.5 + i * 0.01) * 0.025;
                 posArray[i3] += velocities[i3];
                 posArray[i3 + 1] += velocities[i3 + 1];
                 posArray[i3 + 2] += velocities[i3 + 2];
             }
 
             posAttr.needsUpdate = true;
-            particles.rotation.z = Math.sin(time * 0.3) * 0.02;
+            particles.rotation.z = Math.sin(time * 0.3) * 0.015;
             renderer.render(scene, camera);
         };
-
         animate();
 
         window.addEventListener('mousemove', onMouseMove);
-
         const handleResize = () => {
             const w = window.innerWidth;
             const h = window.innerHeight;
@@ -198,17 +175,9 @@ export default function ParticleBackground() {
             renderer.dispose();
             geometry.dispose();
             material.dispose();
-            if (container.contains(renderer.domElement)) {
-                container.removeChild(renderer.domElement);
-            }
+            if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
         };
     }, [onMouseMove]);
 
-    return (
-        <div
-            ref={containerRef}
-            className="fixed inset-0 z-0"
-            style={{ pointerEvents: 'none' }}
-        />
-    );
+    return <div ref={containerRef} className="fixed inset-0 z-0" style={{ pointerEvents: 'none' }} />;
 }

@@ -2,6 +2,11 @@
 
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Breeze Palette */
+  --color-breeze-dark: #326789;
+  --color-breeze-mid: #79a5c8;
+  --color-breeze-light: #e9eef4;
+  --color-breeze-accent: #e65c4f;
 }
 
 html {
@@ -9,56 +14,76 @@ html {
 }
 
 body {
-  background: #ffffff;
-  color: #121317;
+  background: var(--color-breeze-light);
+  color: #1e293b;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
+/* Hide default cursor on desktop */
+@media (pointer: fine) {
+
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f5f5f5;
+  background: var(--color-breeze-light);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--color-breeze-mid);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--color-breeze-dark);
 }
 
 /* Selection */
 ::selection {
-  background: rgba(74, 158, 255, 0.2);
-  color: #121317;
+  background: rgba(50, 103, 137, 0.2);
+  color: #1e293b;
 }
 
-/* Glassmorphism utility */
+/* Glassmorphism for Breeze */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(50, 103, 137, 0.08);
 }
 
-/* Glow effects */
-.glow-blue {
-  box-shadow: 0 0 40px rgba(74, 158, 255, 0.12), 0 0 80px rgba(74, 158, 255, 0.05);
+/* Section stacking effect */
+.section-card {
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -8px 40px rgba(50, 103, 137, 0.06);
+  position: relative;
 }
 
-/* Card hover */
-.card-hover {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+/* Smooth reveal animation */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+.reveal {
+  animation: fadeSlideUp 0.7s ease-out forwards;
 }

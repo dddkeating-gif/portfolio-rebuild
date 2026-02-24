@@ -24,7 +24,6 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
 
     return (
         <>
-            {/* Image gallery */}
             {imageItems.length > 0 && (
                 <div
                     className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4"
@@ -33,41 +32,42 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                     {imageItems.map((item, index) => (
                         <motion.div
                             key={index}
-                            initial={{ opacity: 0, y: 30 }}
+                            initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: '-50px' }}
-                            transition={{ duration: 0.5, delay: (index % 6) * 0.08 }}
-                            className="break-inside-avoid cursor-pointer group"
+                            viewport={{ once: true, margin: '-60px' }}
+                            transition={{ duration: 0.6, delay: (index % 6) * 0.08 }}
+                            className="break-inside-avoid group"
+                            data-cursor-label="View"
                             onClick={() => setLightboxIndex(index)}
                         >
-                            <div className="relative overflow-hidden rounded-xl bg-gray-50 border border-gray-100 transition-all duration-500 group-hover:border-indigo-200 group-hover:shadow-[0_8px_30px_rgba(99,102,241,0.08)] card-hover">
+                            <div className="relative overflow-hidden rounded-2xl bg-white border border-[#326789]/8 transition-all duration-500 group-hover:border-[#326789]/20 group-hover:shadow-[0_12px_40px_rgba(50,103,137,0.1)]"
+                                style={{ transform: 'translateZ(0)' }}
+                            >
                                 <Image
                                     src={item.url}
                                     alt={item.alt}
                                     width={800}
                                     height={600}
-                                    className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
+                                    className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                                     loading="lazy"
                                     unoptimized
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </div>
                         </motion.div>
                     ))}
                 </div>
             )}
 
-            {/* Video embeds */}
             {embedItems.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                     {embedItems.map((item, index) => (
                         <motion.div
                             key={`embed-${index}`}
-                            initial={{ opacity: 0, y: 30 }}
+                            initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="relative overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm card-hover"
+                            transition={{ duration: 0.6, delay: index * 0.1 }}
+                            className="relative overflow-hidden rounded-2xl border border-[#326789]/8 bg-white shadow-sm"
                         >
                             <div className="aspect-video">
                                 <iframe
@@ -78,8 +78,8 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                                     loading="lazy"
                                 />
                             </div>
-                            <div className="p-4 border-t border-gray-100">
-                                <p className="text-sm text-gray-500">{item.alt}</p>
+                            <div className="p-4 border-t border-[#326789]/5">
+                                <p className="text-sm text-[#326789]/50">{item.alt}</p>
                             </div>
                         </motion.div>
                     ))}
@@ -93,7 +93,7 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xl flex items-center justify-center p-4"
+                        className="fixed inset-0 z-[100] bg-[#326789]/90 backdrop-blur-xl flex items-center justify-center p-4"
                         onClick={() => setLightboxIndex(null)}
                     >
                         <button
@@ -102,14 +102,10 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                         >
                             ✕
                         </button>
-
                         {lightboxIndex > 0 && (
                             <button
                                 className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white text-4xl z-[101] p-2"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setLightboxIndex(lightboxIndex - 1);
-                                }}
+                                onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }}
                             >
                                 ‹
                             </button>
@@ -117,15 +113,11 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                         {lightboxIndex < imageItems.length - 1 && (
                             <button
                                 className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white text-4xl z-[101] p-2"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setLightboxIndex(lightboxIndex + 1);
-                                }}
+                                onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }}
                             >
                                 ›
                             </button>
                         )}
-
                         <motion.div
                             key={lightboxIndex}
                             initial={{ scale: 0.9, opacity: 0 }}
