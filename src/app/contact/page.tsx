@@ -14,7 +14,6 @@ export default function ContactPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // In production, this would send to an API
         setSubmitted(true);
         setTimeout(() => setSubmitted(false), 3000);
         setFormState({ name: '', email: '', message: '' });
@@ -34,7 +33,7 @@ export default function ContactPage() {
             >
                 <form onSubmit={handleSubmit} className="glass rounded-2xl p-8 space-y-6">
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-white/40 mb-2">
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-500 mb-2">
                             Name
                         </label>
                         <input
@@ -42,14 +41,14 @@ export default function ContactPage() {
                             type="text"
                             value={formState.name}
                             onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all"
+                            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-all"
                             placeholder="Your name"
                             required
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-white/40 mb-2">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-500 mb-2">
                             Email
                         </label>
                         <input
@@ -57,14 +56,14 @@ export default function ContactPage() {
                             type="email"
                             value={formState.email}
                             onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all"
+                            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-all"
                             placeholder="your@email.com"
                             required
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="message" className="block text-sm font-medium text-white/40 mb-2">
+                        <label htmlFor="message" className="block text-sm font-medium text-gray-500 mb-2">
                             Message
                         </label>
                         <textarea
@@ -72,7 +71,7 @@ export default function ContactPage() {
                             value={formState.message}
                             onChange={(e) => setFormState({ ...formState, message: e.target.value })}
                             rows={5}
-                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all resize-none"
+                            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 transition-all resize-none"
                             placeholder="Tell me about your project..."
                             required
                         />
@@ -80,24 +79,23 @@ export default function ContactPage() {
 
                     <button
                         type="submit"
-                        className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold hover:from-cyan-400 hover:to-purple-400 transition-all duration-300 shadow-[0_0_30px_rgba(0,212,170,0.2)] hover:shadow-[0_0_50px_rgba(0,212,170,0.3)]"
+                        className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white font-semibold hover:from-indigo-600 hover:to-violet-600 transition-all duration-300 shadow-lg hover:shadow-xl"
                     >
                         {submitted ? '✓ Message Sent!' : 'Send Message'}
                     </button>
                 </form>
 
-                {/* Direct links */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                     className="mt-8 text-center"
                 >
-                    <p className="text-white/30 text-sm">
+                    <p className="text-gray-400 text-sm">
                         Or reach out directly at{' '}
                         <a
                             href="mailto:hello@thejake.design"
-                            className="text-cyan-400/70 hover:text-cyan-400 transition-colors"
+                            className="text-indigo-500 hover:text-indigo-600 transition-colors"
                         >
                             hello@thejake.design
                         </a>

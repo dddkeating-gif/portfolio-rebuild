@@ -25,15 +25,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
         <ParticleBackground />
         <Navigation />
         <main className="relative z-10 min-h-screen pt-20">
           {children}
         </main>
-        <footer className="relative z-10 border-t border-white/5 py-8 mt-20">
-          <div className="max-w-7xl mx-auto px-6 text-center text-white/30 text-sm">
+        <footer className="relative z-10 border-t border-black/5 py-8 mt-20">
+          <div className="max-w-7xl mx-auto px-6 text-center text-black/30 text-sm">
             © {new Date().getFullYear()} Jake Vallante. All rights reserved.
           </div>
         </footer>

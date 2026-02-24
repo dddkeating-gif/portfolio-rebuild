@@ -26,11 +26,11 @@ export default function HomePage() {
           className="mb-8"
         >
           <h1 className="text-7xl md:text-9xl font-bold tracking-tighter">
-            <span className="bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-gray-900 via-indigo-700 to-indigo-500 bg-clip-text text-transparent">
               Jake
             </span>
             <br />
-            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-white bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-500 via-violet-500 to-gray-900 bg-clip-text text-transparent">
               Vallante
             </span>
           </h1>
@@ -40,7 +40,7 @@ export default function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.8 }}
-          className="text-xl md:text-2xl text-white/40 font-light tracking-wide mb-16"
+          className="text-xl md:text-2xl text-gray-400 font-light tracking-wide mb-16"
         >
           A millennial that baby boomers like
         </motion.p>
@@ -60,12 +60,12 @@ export default function HomePage() {
             >
               <Link
                 href={section.href}
-                className="group relative block p-6 rounded-2xl glass hover:bg-white/8 transition-all duration-500 hover:shadow-[0_0_40px_rgba(0,212,170,0.1)] hover:border-cyan-500/20"
+                className="group relative block p-6 rounded-2xl glass hover:bg-white/90 transition-all duration-500 hover:shadow-[0_8px_30px_rgba(99,102,241,0.1)] hover:border-indigo-200 card-hover"
               >
-                <div className="text-3xl mb-3 opacity-50 group-hover:opacity-100 transition-opacity">
+                <div className="text-3xl mb-3 opacity-40 group-hover:opacity-80 transition-opacity">
                   {section.icon}
                 </div>
-                <div className="text-sm font-medium text-white/70 group-hover:text-white transition-colors">
+                <div className="text-sm font-medium text-gray-500 group-hover:text-gray-900 transition-colors">
                   {section.label}
                 </div>
               </Link>
@@ -84,7 +84,7 @@ export default function HomePage() {
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-          className="text-white/20 text-sm tracking-widest uppercase"
+          className="text-gray-300 text-sm tracking-widest uppercase"
         >
           ↓ Explore
         </motion.div>

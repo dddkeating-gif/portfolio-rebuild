@@ -17,11 +17,11 @@ export default function SectionHeader({ title, subtitle, children }: SectionHead
             transition={{ duration: 0.6 }}
             className="mb-12"
         >
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-gray-900 via-indigo-800 to-indigo-600 bg-clip-text text-transparent">
                 {title}
             </h1>
             {subtitle && (
-                <p className="text-lg text-white/40 mt-4 max-w-2xl">{subtitle}</p>
+                <p className="text-lg text-gray-400 mt-4 max-w-2xl">{subtitle}</p>
             )}
             {children}
         </motion.div>

@@ -40,7 +40,7 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                             className="break-inside-avoid cursor-pointer group"
                             onClick={() => setLightboxIndex(index)}
                         >
-                            <div className="relative overflow-hidden rounded-xl bg-white/5 border border-white/5 transition-all duration-500 group-hover:border-cyan-500/30 group-hover:shadow-[0_0_30px_rgba(0,212,170,0.1)]">
+                            <div className="relative overflow-hidden rounded-xl bg-gray-50 border border-gray-100 transition-all duration-500 group-hover:border-indigo-200 group-hover:shadow-[0_8px_30px_rgba(99,102,241,0.08)] card-hover">
                                 <Image
                                     src={item.url}
                                     alt={item.alt}
@@ -50,7 +50,7 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                                     loading="lazy"
                                     unoptimized
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </div>
                         </motion.div>
                     ))}
@@ -67,7 +67,7 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="relative overflow-hidden rounded-xl border border-white/10 bg-white/5"
+                            className="relative overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm card-hover"
                         >
                             <div className="aspect-video">
                                 <iframe
@@ -78,8 +78,8 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                                     loading="lazy"
                                 />
                             </div>
-                            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
-                                <p className="text-sm text-white/70">{item.alt}</p>
+                            <div className="p-4 border-t border-gray-100">
+                                <p className="text-sm text-gray-500">{item.alt}</p>
                             </div>
                         </motion.div>
                     ))}
@@ -93,7 +93,7 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4"
+                        className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xl flex items-center justify-center p-4"
                         onClick={() => setLightboxIndex(null)}
                     >
                         <button
@@ -103,7 +103,6 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                             ✕
                         </button>
 
-                        {/* Prev/Next */}
                         {lightboxIndex > 0 && (
                             <button
                                 className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white text-4xl z-[101] p-2"

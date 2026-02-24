@@ -3,7 +3,7 @@
 import { useRef, useEffect, useCallback } from 'react';
 import * as THREE from 'three';
 
-const PARTICLE_COUNT = 2000;
+const PARTICLE_COUNT = 1800;
 const MOUSE_RADIUS = 150;
 const RETURN_SPEED = 0.02;
 const MOUSE_FORCE = 0.08;
@@ -36,7 +36,7 @@ export default function ParticleBackground() {
         });
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setClearColor(0x000000, 1);
+        renderer.setClearColor(0xffffff, 1);
         container.appendChild(renderer.domElement);
 
         // Create particles
@@ -47,14 +47,15 @@ export default function ParticleBackground() {
         const sizes = new Float32Array(PARTICLE_COUNT);
         const colors = new Float32Array(PARTICLE_COUNT * 3);
 
-        // Color palette — subtle blues, purples, teals
+        // Light-theme palette — soft blues, lavenders, slate grays
         const palette = [
             new THREE.Color(0x4a9eff), // blue
             new THREE.Color(0x7b68ee), // medium slate blue
-            new THREE.Color(0x00d4aa), // teal
-            new THREE.Color(0x9966ff), // purple
-            new THREE.Color(0x66ccff), // light blue
-            new THREE.Color(0xffffff), // white
+            new THREE.Color(0x94a3b8), // slate gray
+            new THREE.Color(0xa78bfa), // violet
+            new THREE.Color(0x60a5fa), // light blue
+            new THREE.Color(0xc4b5fd), // light violet
+            new THREE.Color(0x6366f1), // indigo
         ];
 
         for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -87,7 +88,7 @@ export default function ParticleBackground() {
         geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-        // Shader material for glowing particles
+        // Shader material for soft particles on white
         const material = new THREE.ShaderMaterial({
             uniforms: {
                 uTime: { value: 0 },
@@ -105,7 +106,7 @@ export default function ParticleBackground() {
           vColor = color;
           vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
           float depth = -mvPosition.z / 300.0;
-          vOpacity = mix(0.9, 0.15, clamp(depth, 0.0, 1.0));
+          vOpacity = mix(0.55, 0.08, clamp(depth, 0.0, 1.0));
           gl_PointSize = size * uPixelRatio * (200.0 / -mvPosition.z);
           gl_PointSize = max(gl_PointSize, 1.0);
           gl_Position = projectionMatrix * mvPosition;
@@ -124,7 +125,7 @@ export default function ParticleBackground() {
       `,
             transparent: true,
             depthWrite: false,
-            blending: THREE.AdditiveBlending,
+            blending: THREE.NormalBlending,
         });
 
         const particles = new THREE.Points(geometry, material);
@@ -140,56 +141,45 @@ export default function ParticleBackground() {
             const posAttr = geometry.attributes.position as THREE.BufferAttribute;
             const posArray = posAttr.array as Float32Array;
 
-            // Mouse position in world coordinates
             const mouseWorldX = mouseRef.current.x * width * 0.4;
             const mouseWorldY = mouseRef.current.y * height * 0.4;
 
             for (let i = 0; i < PARTICLE_COUNT; i++) {
                 const i3 = i * 3;
 
-                // Distance to mouse
                 const dx = posArray[i3] - mouseWorldX;
                 const dy = posArray[i3 + 1] - mouseWorldY;
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (dist < MOUSE_RADIUS) {
-                    // Repulsion from mouse
                     const force = (1 - dist / MOUSE_RADIUS) * MOUSE_FORCE;
                     velocities[i3] += (dx / dist) * force * 30;
                     velocities[i3 + 1] += (dy / dist) * force * 30;
                 }
 
-                // Spring back to original position
                 velocities[i3] += (originalPositions[i3] - posArray[i3]) * RETURN_SPEED;
                 velocities[i3 + 1] += (originalPositions[i3 + 1] - posArray[i3 + 1]) * RETURN_SPEED;
                 velocities[i3 + 2] += (originalPositions[i3 + 2] - posArray[i3 + 2]) * RETURN_SPEED;
 
-                // Damping
                 velocities[i3] *= 0.92;
                 velocities[i3 + 1] *= 0.92;
                 velocities[i3 + 2] *= 0.92;
 
-                // Gentle floating drift
                 velocities[i3] += Math.sin(time * 2 + i * 0.01) * 0.03;
                 velocities[i3 + 1] += Math.cos(time * 1.5 + i * 0.01) * 0.03;
 
-                // Update positions
                 posArray[i3] += velocities[i3];
                 posArray[i3 + 1] += velocities[i3 + 1];
                 posArray[i3 + 2] += velocities[i3 + 2];
             }
 
             posAttr.needsUpdate = true;
-
-            // Subtle rotation
             particles.rotation.z = Math.sin(time * 0.3) * 0.02;
-
             renderer.render(scene, camera);
         };
 
         animate();
 
-        // Event listeners
         window.addEventListener('mousemove', onMouseMove);
 
         const handleResize = () => {

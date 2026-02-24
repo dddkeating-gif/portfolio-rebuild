@@ -49,22 +49,22 @@ export default function CodingPage() {
                             href={project.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group block p-8 rounded-2xl glass hover:bg-white/8 transition-all duration-500 hover:shadow-[0_0_40px_rgba(0,212,170,0.1)] hover:border-cyan-500/20 h-full"
+                            className="group block p-8 rounded-2xl glass hover:bg-white/90 transition-all duration-500 hover:shadow-[0_8px_30px_rgba(99,102,241,0.1)] hover:border-indigo-200 h-full card-hover"
                         >
                             <div className="flex items-start justify-between mb-4">
-                                <h3 className="text-xl font-semibold text-white group-hover:text-cyan-400 transition-colors">
+                                <h3 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
                                     {project.title}
                                 </h3>
-                                <span className="text-white/30 group-hover:text-cyan-400 transition-colors text-lg">
+                                <span className="text-gray-300 group-hover:text-indigo-500 transition-colors text-lg">
                                     ↗
                                 </span>
                             </div>
-                            <p className="text-white/40 text-sm mb-6">{project.description}</p>
+                            <p className="text-gray-400 text-sm mb-6">{project.description}</p>
                             <div className="flex flex-wrap gap-2">
                                 {project.tech.map((t) => (
                                     <span
                                         key={t}
-                                        className="text-xs px-3 py-1 rounded-full bg-white/5 text-white/40 border border-white/5"
+                                        className="text-xs px-3 py-1 rounded-full bg-gray-50 text-gray-500 border border-gray-100"
                                     >
                                         {t}
                                     </span>
@@ -75,10 +75,9 @@ export default function CodingPage() {
                 ))}
             </div>
 
-            {/* Show any coding images from scrape */}
             {section && section.items.filter((i) => i.type === 'image').length > 0 && (
                 <div className="mt-16">
-                    <h2 className="text-2xl font-bold text-white/80 mb-8">Project Screenshots</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-8">Project Screenshots</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {section.items
                             .filter((i) => i.type === 'image')
@@ -89,7 +88,7 @@ export default function CodingPage() {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                                    className="rounded-xl overflow-hidden border border-white/5"
+                                    className="rounded-xl overflow-hidden border border-gray-100 shadow-sm card-hover"
                                 >
                                     <img
                                         src={item.url}
