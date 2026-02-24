@@ -79,13 +79,13 @@ export default function HomePage() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.2 }}
-            className="text-7xl md:text-9xl font-bold tracking-tighter mb-6"
+            className="text-7xl md:text-9xl font-bold tracking-tighter mb-6 px-2"
           >
-            <span className="bg-gradient-to-r from-[#326789] via-[#79a5c8] to-[#326789] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#79a5c8] via-[#e9eef4] to-[#79a5c8] bg-clip-text text-transparent">
               Jake
             </span>
             <br />
-            <span className="bg-gradient-to-r from-[#e65c4f] via-[#326789] to-[#79a5c8] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#e65c4f] via-[#79a5c8] to-[#e9eef4] bg-clip-text text-transparent">
               Vallante
             </span>
           </motion.h1>
@@ -94,7 +94,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.8 }}
-            className="text-xl md:text-2xl text-[#326789]/40 font-light tracking-wide mb-16"
+            className="text-xl md:text-2xl text-[#79a5c8]/60 font-light tracking-wide mb-16"
           >
             A millennial that baby boomers like
           </motion.p>
@@ -118,12 +118,12 @@ export default function HomePage() {
                 transition={{ delay: 1.2 + i * 0.1, duration: 0.5 }}
                 onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth' })}
                 data-cursor-label={s.label}
-                className="group p-6 rounded-2xl glass hover:bg-white/80 transition-all duration-500 hover:shadow-[0_8px_30px_rgba(50,103,137,0.1)] hover:border-[#326789]/15"
+                className="group p-6 rounded-2xl glass-dark hover:bg-white/10 transition-all duration-500 hover:shadow-[0_8px_30px_rgba(121,165,200,0.1)] hover:border-[#79a5c8]/25"
               >
-                <div className="text-3xl mb-3 opacity-30 group-hover:opacity-70 transition-opacity text-[#326789]">
+                <div className="text-3xl mb-3 opacity-30 group-hover:opacity-80 transition-opacity text-[#79a5c8]">
                   {s.icon}
                 </div>
-                <div className="text-sm font-medium text-[#326789]/50 group-hover:text-[#326789] transition-colors">
+                <div className="text-sm font-medium text-[#79a5c8]/50 group-hover:text-[#e9eef4] transition-colors">
                   {s.label}
                 </div>
               </motion.button>
@@ -140,7 +140,7 @@ export default function HomePage() {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-            className="text-[#326789]/20 text-sm tracking-widest uppercase"
+            className="text-[#79a5c8]/30 text-sm tracking-widest uppercase"
           >
             ↓ Scroll to explore
           </motion.div>
@@ -161,7 +161,7 @@ export default function HomePage() {
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="md:col-span-1"
               >
-                <div className="rounded-2xl overflow-hidden border border-[#326789]/10 shadow-lg">
+                <div className="rounded-full overflow-hidden">
                   <Image src={profileImage.url} alt="Jake Vallante" width={400} height={400}
                     className="w-full h-auto object-cover" unoptimized />
                 </div>

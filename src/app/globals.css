@@ -14,7 +14,7 @@ html {
 }
 
 body {
-  background: var(--color-breeze-light);
+  background: #0d1821;
   color: #1e293b;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -38,7 +38,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-breeze-light);
+  background: #0d1821;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -52,38 +52,39 @@ body {
 
 /* Selection */
 ::selection {
-  background: rgba(50, 103, 137, 0.2);
-  color: #1e293b;
+  background: rgba(50, 103, 137, 0.3);
+  color: #fff;
 }
 
-/* Glassmorphism for Breeze */
+/* Glassmorphism for Breeze (dark variant for hero) */
+.glass-dark {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(121, 165, 200, 0.1);
+}
+
+/* Glassmorphism for Breeze (light variant for content) */
 .glass {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(24px);
   border: 1px solid rgba(50, 103, 137, 0.08);
 }
 
-/* Section stacking effect */
+/* Section stacking effect — white cards stacking over dark canvas */
 .section-card {
   background: #fff;
-  border-radius: 24px 24px 0 0;
-  box-shadow: 0 -8px 40px rgba(50, 103, 137, 0.06);
+  border-radius: 0;
+  box-shadow: 0 -12px 60px rgba(13, 24, 33, 0.15);
   position: relative;
+  z-index: 1;
 }
 
-/* Smooth reveal animation */
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Card hover */
+.card-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.reveal {
-  animation: fadeSlideUp 0.7s ease-out forwards;
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
 }
