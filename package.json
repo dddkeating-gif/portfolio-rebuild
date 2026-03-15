@@ -1,5 +1,5 @@
 {
-  "name": "nextjs",
+  "name": "nextjs-temp",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,9 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@types/three": "^0.183.1",
+    "@vercel/blob": "^2.3.0",
+    "framer-motion": "^12.34.3",
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "three": "^0.183.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

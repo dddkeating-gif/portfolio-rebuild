@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Breeze Palette */
+  --color-breeze-dark: #326789;
+  --color-breeze-mid: #79a5c8;
+  --color-breeze-light: #e9eef4;
+  --color-breeze-accent: #e65c4f;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #0d1821;
+  color: #1e293b;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Hide default cursor on desktop */
+@media (pointer: fine) {
+
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d1821;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-breeze-mid);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-breeze-dark);
+}
+
+/* Selection */
+::selection {
+  background: rgba(50, 103, 137, 0.3);
+  color: #fff;
+}
+
+/* Glassmorphism for Breeze (dark variant for hero) */
+.glass-dark {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(121, 165, 200, 0.1);
+}
+
+/* Glassmorphism for Breeze (light variant for content) */
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(50, 103, 137, 0.08);
+}
+
+/* Section stacking effect — white cards stacking over dark canvas */
+.section-card {
+  background: #fff;
+  border-radius: 0;
+  box-shadow: 0 -12px 60px rgba(13, 24, 33, 0.15);
+  position: relative;
+  z-index: 1;
+}
+
+/* Card hover */
+.card-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+}
