@@ -13,6 +13,10 @@ html {
   scroll-behavior: smooth;
 }
 
+section {
+  scroll-margin-top: 72px;
+}
+
 body {
   background: #0d1821;
   color: #1e293b;
@@ -77,7 +81,6 @@ body {
   box-shadow: 0 -12px 60px rgba(13, 24, 33, 0.15);
   position: relative;
   z-index: 1;
-  scroll-margin-top: 72px;
 }
 
 /* Card hover */
