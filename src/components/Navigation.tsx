@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_LINKS = [
@@ -18,34 +18,69 @@ export default function Navigation() {
     const [activeSection, setActiveSection] = useState('hero');
     const [scrolled, setScrolled] = useState(false);
     const [inHero, setInHero] = useState(true);
+    const observerRef = useRef<IntersectionObserver | null>(null);
+
+    // Track which sections are visible and pick the best one
+    const visibleSections = useRef<Map<string, number>>(new Map());
+
+    const updateActiveSection = useCallback(() => {
+        let bestSection = 'hero';
+        let bestRatio = 0;
+        visibleSections.current.forEach((ratio, id) => {
+            if (ratio > bestRatio) {
+                bestRatio = ratio;
+                bestSection = id;
+            }
+        });
+        // Fallback: if near top of page, force hero
+        if (window.scrollY < 100) {
+            bestSection = 'hero';
+        }
+        setActiveSection(bestSection);
+    }, []);
 
     useEffect(() => {
+        // Scroll listener for navbar background + hero detection
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
-
-            // Check if we're in the hero (dark) region
             const aboutEl = document.getElementById('about');
             if (aboutEl) {
                 const aboutTop = aboutEl.getBoundingClientRect().top;
                 setInHero(aboutTop > 80);
             }
-
-            const sections = NAV_LINKS.map(l => l.href.replace('#', ''));
-            for (let i = sections.length - 1; i >= 0; i--) {
-                const el = document.getElementById(sections[i]);
-                if (el) {
-                    const rect = el.getBoundingClientRect();
-                    if (rect.top <= 120) {
-                        setActiveSection(sections[i]);
-                        break;
-                    }
-                }
-            }
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+
+        // IntersectionObserver for active section tracking
+        const sectionIds = NAV_LINKS.map(l => l.href.replace('#', ''));
+        observerRef.current = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        visibleSections.current.set(entry.target.id, entry.intersectionRatio);
+                    } else {
+                        visibleSections.current.delete(entry.target.id);
+                    }
+                });
+                updateActiveSection();
+            },
+            {
+                rootMargin: '-72px 0px -30% 0px',
+                threshold: [0, 0.1, 0.2, 0.3, 0.5],
+            }
+        );
+
+        sectionIds.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) observerRef.current?.observe(el);
+        });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            observerRef.current?.disconnect();
+        };
+    }, [updateActiveSection]);
 
     const scrollTo = (href: string) => {
         const id = href.replace('#', '');
@@ -56,11 +91,9 @@ export default function Navigation() {
         setIsOpen(false);
     };
 
-    // Color scheme based on section
+    // Color scheme based on section (hero = dark bg, rest = light bg)
     const textBase = scrolled && !inHero ? 'text-[#326789]' : 'text-[#79a5c8]';
-    const textActive = scrolled && !inHero ? 'text-[#326789]' : 'text-white';
     const textMuted = scrolled && !inHero ? 'text-[#326789]/50' : 'text-[#79a5c8]/60';
-    const activeBg = scrolled && !inHero ? 'bg-[#326789]/10' : 'bg-white/10';
     const hoverBg = scrolled && !inHero ? 'hover:bg-[#326789]/5' : 'hover:bg-white/5';
 
     return (
@@ -72,7 +105,7 @@ export default function Navigation() {
                     : 'bg-transparent'
                 }`}
         >
-            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-8">
                 <button
                     onClick={() => scrollTo('#hero')}
                     className={`text-xl font-bold tracking-tight ${textBase} hover:text-[#e65c4f] transition-colors`}
@@ -81,23 +114,27 @@ export default function Navigation() {
                 </button>
 
                 <div className="hidden md:flex items-center gap-1">
-                    {NAV_LINKS.map((link) => (
-                        <button
-                            key={link.href}
-                            onClick={() => scrollTo(link.href)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeSection === link.href.replace('#', '')
-                                    ? `${activeBg} ${textActive}`
-                                    : `${textMuted} hover:${textActive} ${hoverBg}`
+                    {NAV_LINKS.map((link) => {
+                        const isActive = activeSection === link.href.replace('#', '');
+                        return (
+                            <button
+                                key={link.href}
+                                onClick={() => scrollTo(link.href)}
+                                className={`nav-link px-4 py-2 rounded-full transition-all duration-300 ${
+                                    isActive
+                                        ? 'text-[#e65c4f]'
+                                        : `${textMuted} hover:text-[#e65c4f] ${hoverBg}`
                                 }`}
-                        >
-                            {link.label}
-                        </button>
-                    ))}
+                            >
+                                {link.label}
+                            </button>
+                        );
+                    })}
                 </div>
 
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className={`md:hidden ${textMuted} hover:${textActive} p-2`}
+                    className={`md:hidden ml-auto ${textMuted} hover:text-[#e65c4f] p-2`}
                     aria-label="Toggle menu"
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -115,18 +152,22 @@ export default function Navigation() {
                         className="md:hidden overflow-hidden backdrop-blur-2xl bg-white/90 border-b border-[#326789]/8"
                     >
                         <div className="px-6 py-4 space-y-1">
-                            {NAV_LINKS.map((link) => (
-                                <button
-                                    key={link.href}
-                                    onClick={() => scrollTo(link.href)}
-                                    className={`block w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all ${activeSection === link.href.replace('#', '')
-                                            ? 'bg-[#326789]/10 text-[#326789]'
-                                            : 'text-[#326789]/50 hover:text-[#326789] hover:bg-[#326789]/5'
+                            {NAV_LINKS.map((link) => {
+                                const isActive = activeSection === link.href.replace('#', '');
+                                return (
+                                    <button
+                                        key={link.href}
+                                        onClick={() => scrollTo(link.href)}
+                                        className={`nav-link block w-full text-left px-4 py-3 rounded-xl transition-all ${
+                                            isActive
+                                                ? 'bg-[#e65c4f]/10 text-[#e65c4f]'
+                                                : 'text-[#326789]/50 hover:text-[#e65c4f] hover:bg-[#326789]/5'
                                         }`}
-                                >
-                                    {link.label}
-                                </button>
-                            ))}
+                                    >
+                                        {link.label}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </motion.div>
                 )}

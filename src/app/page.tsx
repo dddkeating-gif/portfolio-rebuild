@@ -68,7 +68,7 @@ export default function HomePage() {
   return (
     <>
       {/* ═══════ HERO ═══════ */}
-      <section id="hero" className="min-h-screen flex flex-col items-center justify-center px-6 pt-20">
+      <section id="hero" className="min-h-screen flex flex-col items-center justify-center px-6 pt-20" style={{ scrollMarginTop: '72px' }}>
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -79,13 +79,13 @@ export default function HomePage() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.2 }}
-            className="text-7xl md:text-9xl font-bold tracking-tighter mb-6 px-2"
+            className="text-7xl md:text-9xl font-bold tracking-tighter mb-6 px-2 leading-[1.15]"
           >
-            <span className="bg-gradient-to-r from-[#79a5c8] via-[#e9eef4] to-[#79a5c8] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#79a5c8] via-[#e9eef4] to-[#79a5c8] bg-clip-text text-transparent gradient-text">
               Jake
             </span>
             <br />
-            <span className="bg-gradient-to-r from-[#e65c4f] via-[#79a5c8] to-[#e9eef4] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#e65c4f] via-[#79a5c8] to-[#e9eef4] bg-clip-text text-transparent gradient-text">
               Vallante
             </span>
           </motion.h1>

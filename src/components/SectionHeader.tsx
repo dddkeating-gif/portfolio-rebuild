@@ -19,9 +19,9 @@ export default function SectionHeader({ title, subtitle, children, accent }: Sec
             transition={{ duration: 0.7 }}
             className="mb-12"
         >
-            <h2 className={`text-4xl md:text-6xl font-bold tracking-tight ${accent
+            <h2 className={`text-4xl md:text-6xl font-bold tracking-tight leading-[1.15] ${accent
                     ? 'text-[#e65c4f]'
-                    : 'bg-gradient-to-r from-[#326789] to-[#79a5c8] bg-clip-text text-transparent'
+                    : 'bg-gradient-to-r from-[#326789] to-[#79a5c8] bg-clip-text text-transparent gradient-text'
                 }`}>
                 {title}
             </h2>
