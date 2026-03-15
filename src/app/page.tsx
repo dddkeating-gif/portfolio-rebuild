@@ -161,8 +161,8 @@ export default function HomePage() {
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="md:col-span-1"
               >
-                <div className="rounded-full overflow-hidden">
-                  <Image src={profileImage.url} alt="Jake Vallante" width={400} height={400}
+                <div className="rounded-xl overflow-hidden shadow-lg border border-[#326789]/5">
+                  <Image src="/images/profile-photo.jpg" alt="Jake Vallante" width={600} height={900}
                     className="w-full h-auto object-cover" unoptimized />
                 </div>
               </motion.div>
