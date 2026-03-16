@@ -68,7 +68,7 @@ export default function HomePage() {
   return (
     <>
       {/* ═══════ HERO ═══════ */}
-      <section id="hero" className="min-h-screen flex flex-col items-center justify-center px-6 pt-20">
+      <section id="hero" data-section="hero" className="scroll-anchor min-h-screen flex flex-col items-center justify-center px-6 pt-20">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -148,7 +148,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══════ ABOUT ═══════ */}
-      <section id="about" className="section-card py-24 px-6">
+      <section id="about" data-section="about" className="scroll-anchor section-card py-24 px-6">
         <div className="max-w-5xl mx-auto">
           <SectionHeader title="About" />
 
@@ -237,7 +237,7 @@ export default function HomePage() {
 
       {/* ═══════ GRAPHIC DESIGN ═══════ */}
       {graphicSection && (
-        <section id="graphic-design" className="section-card py-24 px-6">
+        <section id="graphic-design" data-section="graphic-design" className="scroll-anchor section-card py-24 px-6">
           <div className="max-w-7xl mx-auto">
             <SectionHeader title="Graphic Design"
               subtitle={`${graphicSection.items.filter(i => i.type === 'image').length} works`} />
@@ -248,7 +248,7 @@ export default function HomePage() {
 
       {/* ═══════ ANIMATION ═══════ */}
       {animationSection && (
-        <section id="animation" className="section-card py-24 px-6">
+        <section id="animation" data-section="animation" className="scroll-anchor section-card py-24 px-6">
           <div className="max-w-7xl mx-auto">
             <SectionHeader title="Animation & Video"
               subtitle={`${animationSection.items.filter(i => i.type === 'video-embed').length} videos`} />
@@ -259,7 +259,7 @@ export default function HomePage() {
 
       {/* ═══════ PHOTOGRAPHY ═══════ */}
       {photographySection && (
-        <section id="photography" className="section-card py-24 px-6">
+        <section id="photography" data-section="photography" className="scroll-anchor section-card py-24 px-6">
           <div className="max-w-7xl mx-auto">
             <SectionHeader title="Photography"
               subtitle={`${photographySection.items.filter(i => i.type === 'image').length} photographs`} />
@@ -269,7 +269,7 @@ export default function HomePage() {
       )}
 
       {/* ═══════ CODING ═══════ */}
-      <section id="coding" className="section-card py-24 px-6">
+      <section id="coding" data-section="coding" className="scroll-anchor section-card py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <SectionHeader title="Coding" subtitle="Interactive web projects & experiments" />
 
@@ -327,7 +327,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══════ CONTACT ═══════ */}
-      <section id="contact" className="section-card py-24 px-6">
+      <section id="contact" data-section="contact" className="scroll-anchor section-card py-24 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <SectionHeader title="Get in Touch" accent />
 

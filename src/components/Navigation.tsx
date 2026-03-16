@@ -43,9 +43,9 @@ export default function Navigation() {
         // Scroll listener for navbar background + hero detection
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
-            const aboutEl = document.getElementById('about');
-            if (aboutEl) {
-                const aboutTop = aboutEl.getBoundingClientRect().top;
+            const aboutAnchor = document.getElementById('about');
+            if (aboutAnchor) {
+                const aboutTop = aboutAnchor.getBoundingClientRect().top;
                 setInHero(aboutTop > 80);
             }
         };
@@ -53,27 +53,28 @@ export default function Navigation() {
         window.addEventListener('scroll', handleScroll, { passive: true });
 
         // IntersectionObserver for active section tracking
-        const sectionIds = NAV_LINKS.map(l => l.href.replace('#', ''));
+        // Observe the actual <section> elements (which have data-section attributes)
+        const sectionEls = document.querySelectorAll('section[data-section]');
         observerRef.current = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
+                    const sectionId = entry.target.getAttribute('data-section') || '';
                     if (entry.isIntersecting) {
-                        visibleSections.current.set(entry.target.id, entry.intersectionRatio);
+                        visibleSections.current.set(sectionId, entry.intersectionRatio);
                     } else {
-                        visibleSections.current.delete(entry.target.id);
+                        visibleSections.current.delete(sectionId);
                     }
                 });
                 updateActiveSection();
             },
             {
-                rootMargin: '-72px 0px -30% 0px',
+                rootMargin: '-80px 0px -30% 0px',
                 threshold: [0, 0.1, 0.2, 0.3, 0.5],
             }
         );
 
-        sectionIds.forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) observerRef.current?.observe(el);
+        sectionEls.forEach((el) => {
+            observerRef.current?.observe(el);
         });
 
         return () => {
@@ -82,17 +83,7 @@ export default function Navigation() {
         };
     }, [updateActiveSection]);
 
-    const scrollTo = (href: string) => {
-        const id = href.replace('#', '');
-        const el = document.getElementById(id);
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        setIsOpen(false);
-    };
-
     // Color scheme based on section (hero = dark bg, rest = light bg)
-    const textBase = scrolled && !inHero ? 'text-[#326789]' : 'text-[#79a5c8]';
     const textMuted = scrolled && !inHero ? 'text-[#326789]/50' : 'text-[#79a5c8]/60';
     const hoverBg = scrolled && !inHero ? 'hover:bg-[#326789]/5' : 'hover:bg-white/5';
 
@@ -105,21 +96,24 @@ export default function Navigation() {
                     : 'bg-transparent'
                 }`}
         >
-            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-8">
-                <button
-                    onClick={() => scrollTo('#hero')}
-                    className={`text-xl font-bold tracking-tight ${textBase} hover:text-[#e65c4f] transition-colors`}
-                >
-                    JV
-                </button>
-
+            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-1">
                 <div className="hidden md:flex items-center gap-1">
                     {NAV_LINKS.map((link) => {
                         const isActive = activeSection === link.href.replace('#', '');
                         return (
-                            <button
+                            <a
                                 key={link.href}
-                                onClick={() => scrollTo(link.href)}
+                                href={link.href}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setIsOpen(false);
+                                    const targetId = link.href.replace('#', '');
+                                    const elem = document.getElementById(targetId);
+                                    if (elem) {
+                                        elem.scrollIntoView({ behavior: 'smooth' });
+                                        window.history.pushState(null, '', link.href);
+                                    }
+                                }}
                                 className={`nav-link px-4 py-2 rounded-full transition-all duration-300 ${
                                     isActive
                                         ? 'text-[#e65c4f]'
@@ -127,7 +121,7 @@ export default function Navigation() {
                                 }`}
                             >
                                 {link.label}
-                            </button>
+                            </a>
                         );
                     })}
                 </div>
@@ -155,9 +149,19 @@ export default function Navigation() {
                             {NAV_LINKS.map((link) => {
                                 const isActive = activeSection === link.href.replace('#', '');
                                 return (
-                                    <button
+                                    <a
                                         key={link.href}
-                                        onClick={() => scrollTo(link.href)}
+                                        href={link.href}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setIsOpen(false);
+                                            const targetId = link.href.replace('#', '');
+                                            const elem = document.getElementById(targetId);
+                                            if (elem) {
+                                                elem.scrollIntoView({ behavior: 'smooth' });
+                                                window.history.pushState(null, '', link.href);
+                                            }
+                                        }}
                                         className={`nav-link block w-full text-left px-4 py-3 rounded-xl transition-all ${
                                             isActive
                                                 ? 'bg-[#e65c4f]/10 text-[#e65c4f]'
@@ -165,7 +169,7 @@ export default function Navigation() {
                                         }`}
                                     >
                                         {link.label}
-                                    </button>
+                                    </a>
                                 );
                             })}
                         </div>
