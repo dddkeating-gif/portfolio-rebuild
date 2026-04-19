@@ -10,6 +10,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/IKEA',
+        destination: 'https://ikea-quiz-app.vercel.app',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
