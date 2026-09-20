@@ -18,28 +18,80 @@ export default function Navigation() {
     const [activeSection, setActiveSection] = useState('hero');
     const [scrolled, setScrolled] = useState(false);
     const [inHero, setInHero] = useState(true);
-    const observerRef = useRef<IntersectionObserver | null>(null);
+    const navigationCleanupRef = useRef<(() => void) | null>(null);
 
-    // Track which sections are visible and pick the best one
-    const visibleSections = useRef<Map<string, number>>(new Map());
+    const handleNavigation = useCallback((event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        event.preventDefault();
+        setIsOpen(false);
 
-    const updateActiveSection = useCallback(() => {
-        let bestSection = 'hero';
-        let bestRatio = 0;
-        visibleSections.current.forEach((ratio, id) => {
-            if (ratio > bestRatio) {
-                bestRatio = ratio;
-                bestSection = id;
+        const target = document.getElementById(href.slice(1));
+        if (!target) return;
+
+        navigationCleanupRef.current?.();
+
+        const getTargetScrollTop = () => {
+            const scrollMarginTop = Number.parseFloat(window.getComputedStyle(target).scrollMarginTop) || 0;
+            const targetTop = target.getBoundingClientRect().top + window.scrollY - scrollMarginTop;
+            const maxScrollTop = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+            return Math.min(Math.max(0, targetTop), maxScrollTop);
+        };
+
+        const supportsScrollEnd = 'onscrollend' in window;
+        let isSettled = !supportsScrollEnd || Math.abs(window.scrollY - getTargetScrollTop()) <= 2;
+
+        const alignToCurrentTarget = () => {
+            const targetScrollTop = getTargetScrollTop();
+            if (Math.abs(window.scrollY - targetScrollTop) <= 2) {
+                isSettled = true;
+                return;
             }
+
+            isSettled = false;
+            window.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
+        };
+
+        const handleScrollEnd = () => alignToCurrentTarget();
+        const layoutObserver = new ResizeObserver(() => {
+            if (isSettled) alignToCurrentTarget();
         });
-        // Fallback: if near top of page, force hero
-        if (window.scrollY < 100) {
-            bestSection = 'hero';
+        const cancelOnUserIntent = () => navigationCleanupRef.current?.();
+        const cleanup = () => {
+            window.removeEventListener('scrollend', handleScrollEnd);
+            window.removeEventListener('wheel', cancelOnUserIntent);
+            window.removeEventListener('touchstart', cancelOnUserIntent);
+            window.removeEventListener('pointerdown', cancelOnUserIntent);
+            window.removeEventListener('keydown', cancelOnUserIntent);
+            window.removeEventListener('popstate', cancelOnUserIntent);
+            layoutObserver.disconnect();
+            if (navigationCleanupRef.current === cleanup) {
+                navigationCleanupRef.current = null;
+            }
+        };
+
+        if (supportsScrollEnd) {
+            window.addEventListener('scrollend', handleScrollEnd);
         }
-        setActiveSection(bestSection);
+        window.addEventListener('wheel', cancelOnUserIntent, { passive: true });
+        window.addEventListener('touchstart', cancelOnUserIntent, { passive: true });
+        window.addEventListener('pointerdown', cancelOnUserIntent);
+        window.addEventListener('keydown', cancelOnUserIntent);
+        window.addEventListener('popstate', cancelOnUserIntent);
+        for (const section of document.querySelectorAll<HTMLElement>('section[data-section]')) {
+            layoutObserver.observe(section);
+            if (section === target) break;
+        }
+        navigationCleanupRef.current = cleanup;
+
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        if (window.location.hash !== href) {
+            window.history.pushState(null, '', href);
+        }
     }, []);
 
     useEffect(() => {
+        const sectionEls = Array.from(document.querySelectorAll<HTMLElement>('section[data-section]'));
+
         // Scroll listener for navbar background + hero detection
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
@@ -48,40 +100,32 @@ export default function Navigation() {
                 const aboutTop = aboutAnchor.getBoundingClientRect().top;
                 setInHero(aboutTop > 80);
             }
+
+            if (window.scrollY < 100) {
+                setActiveSection('hero');
+                return;
+            }
+
+            if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+                setActiveSection(sectionEls.at(-1)?.dataset.section || 'hero');
+                return;
+            }
+
+            const activationLine = Number.parseFloat(window.getComputedStyle(sectionEls[0]).scrollMarginTop) || 80;
+            const currentSection = sectionEls.reduce((current, section) => (
+                section.getBoundingClientRect().top <= activationLine + 1 ? section : current
+            ), sectionEls[0]);
+            setActiveSection(currentSection.dataset.section || 'hero');
         };
 
+        handleScroll();
         window.addEventListener('scroll', handleScroll, { passive: true });
-
-        // IntersectionObserver for active section tracking
-        // Observe the actual <section> elements (which have data-section attributes)
-        const sectionEls = document.querySelectorAll('section[data-section]');
-        observerRef.current = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    const sectionId = entry.target.getAttribute('data-section') || '';
-                    if (entry.isIntersecting) {
-                        visibleSections.current.set(sectionId, entry.intersectionRatio);
-                    } else {
-                        visibleSections.current.delete(sectionId);
-                    }
-                });
-                updateActiveSection();
-            },
-            {
-                rootMargin: '-80px 0px -30% 0px',
-                threshold: [0, 0.1, 0.2, 0.3, 0.5],
-            }
-        );
-
-        sectionEls.forEach((el) => {
-            observerRef.current?.observe(el);
-        });
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            observerRef.current?.disconnect();
+            navigationCleanupRef.current?.();
         };
-    }, [updateActiveSection]);
+    }, []);
 
     // Color scheme based on section (hero = dark bg, rest = light bg)
     const textMuted = scrolled && !inHero ? 'text-[#326789]/50' : 'text-[#79a5c8]/60';
@@ -104,16 +148,7 @@ export default function Navigation() {
                             <a
                                 key={link.href}
                                 href={link.href}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setIsOpen(false);
-                                    const targetId = link.href.replace('#', '');
-                                    const elem = document.getElementById(targetId);
-                                    if (elem) {
-                                        elem.scrollIntoView({ behavior: 'smooth' });
-                                        window.history.pushState(null, '', link.href);
-                                    }
-                                }}
+                                onClick={(event) => handleNavigation(event, link.href)}
                                 className={`nav-link px-4 py-2 rounded-full transition-all duration-300 ${
                                     isActive
                                         ? 'text-[#e65c4f]'
@@ -152,16 +187,7 @@ export default function Navigation() {
                                     <a
                                         key={link.href}
                                         href={link.href}
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            setIsOpen(false);
-                                            const targetId = link.href.replace('#', '');
-                                            const elem = document.getElementById(targetId);
-                                            if (elem) {
-                                                elem.scrollIntoView({ behavior: 'smooth' });
-                                                window.history.pushState(null, '', link.href);
-                                            }
-                                        }}
+                                        onClick={(event) => handleNavigation(event, link.href)}
                                         className={`nav-link block w-full text-left px-4 py-3 rounded-xl transition-all ${
                                             isActive
                                                 ? 'bg-[#e65c4f]/10 text-[#e65c4f]'
