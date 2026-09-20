@@ -37,7 +37,6 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                             viewport={{ once: true, margin: '-60px' }}
                             transition={{ duration: 0.6, delay: (index % 6) * 0.08 }}
                             className="break-inside-avoid group"
-                            data-cursor-label="View"
                             onClick={() => setLightboxIndex(index)}
                         >
                             <div className="relative overflow-hidden rounded-2xl bg-white border border-[#326789]/8 transition-all duration-500 group-hover:border-[#326789]/20 group-hover:shadow-[0_12px_40px_rgba(50,103,137,0.1)]"

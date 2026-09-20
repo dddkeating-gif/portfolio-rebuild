@@ -117,7 +117,6 @@ export default function HomePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2 + i * 0.1, duration: 0.5 }}
                 onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth' })}
-                data-cursor-label={s.label}
                 className="group p-6 rounded-2xl glass-dark hover:bg-white/10 transition-all duration-500 hover:shadow-[0_8px_30px_rgba(121,165,200,0.1)] hover:border-[#79a5c8]/25"
               >
                 <div className="text-3xl mb-3 opacity-30 group-hover:opacity-80 transition-opacity text-[#79a5c8]">
@@ -284,7 +283,6 @@ export default function HomePage() {
                 href={project.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                data-cursor-label="Visit ↗"
                 className="group block p-8 rounded-2xl bg-[#e9eef4]/50 border border-[#326789]/6 hover:bg-white hover:shadow-[0_12px_40px_rgba(50,103,137,0.08)] hover:border-[#326789]/15 transition-all duration-500"
               >
                 <div className="flex items-start justify-between mb-4">
@@ -344,7 +342,6 @@ export default function HomePage() {
 
             <a
               href="mailto:JMVallante@gmail.com"
-              data-cursor-label="Send email"
               className="inline-flex items-center gap-3 text-2xl md:text-3xl font-semibold text-[#326789] hover:text-[#e65c4f] transition-colors duration-300 group"
             >
               <span className="inline-block w-3 h-3 rounded-full bg-[#e65c4f] group-hover:scale-125 transition-transform" />
