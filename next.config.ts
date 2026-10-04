@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/gossamer',
+        destination: 'https://gossamer-red.vercel.app/',
+        permanent: false,
+      },
+      {
         source: '/IKEA',
         destination: 'https://ikea-quiz-app.vercel.app',
         permanent: false,
