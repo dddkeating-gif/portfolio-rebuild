@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/Verboten',
+        destination: 'https://verboten.sortasora000.chatgpt.site/',
+        permanent: false,
+      },
+      {
         source: '/gossamer',
         destination: 'https://gossamer-red.vercel.app/',
         permanent: false,
