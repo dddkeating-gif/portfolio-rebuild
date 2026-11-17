@@ -3,7 +3,8 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import SectionHeader from '@/components/SectionHeader';
-import GalleryGrid from '@/components/GalleryGrid';
+import GalleryGrid, { type GalleryItem } from '@/components/GalleryGrid';
+import UnveilScreenshots from '@/components/UnveilScreenshots';
 import portfolioData from '@/data/portfolio-data.json';
 
 /* ──────────────────────── DATA ──────────────────────── */
@@ -62,7 +63,7 @@ export default function HomePage() {
   const graphicSection = getSection('graphic-design');
   const animationSection = getSection('animation');
   const photographySection = getSection('photography');
-  const codingSection = getSection('coding');
+  const codingImages: GalleryItem[] = getSection('coding')?.items.filter((item) => item.type === 'image') ?? [];
   const profileImage = aboutSection?.items.find((i) => i.type === 'image');
 
   return (
@@ -111,12 +112,12 @@ export default function HomePage() {
               { id: 'photography', label: 'Photography', icon: '◉' },
               { id: 'coding', label: 'Coding', icon: '⟨/⟩' },
             ].map((s, i) => (
-              <motion.button
+              <motion.a
                 key={s.id}
+                href={`#${s.id}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2 + i * 0.1, duration: 0.5 }}
-                onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth' })}
                 className="group p-6 rounded-2xl glass-dark hover:bg-white/10 transition-all duration-500 hover:shadow-[0_8px_30px_rgba(121,165,200,0.1)] hover:border-[#79a5c8]/25"
               >
                 <div className="text-3xl mb-3 opacity-30 group-hover:opacity-80 transition-opacity text-[#79a5c8]">
@@ -125,7 +126,7 @@ export default function HomePage() {
                 <div className="text-sm font-medium text-[#79a5c8]/50 group-hover:text-[#e9eef4] transition-colors">
                   {s.label}
                 </div>
-              </motion.button>
+              </motion.a>
             ))}
           </motion.div>
         </motion.div>
@@ -161,7 +162,7 @@ export default function HomePage() {
                 className="md:col-span-1"
               >
                 <div className="rounded-xl overflow-hidden shadow-lg border border-[#326789]/5">
-                  <Image src="/images/profile-photo.jpg" alt="Jake Vallante" width={600} height={900}
+                  <Image src="/images/profile-photo.jpg" alt="Jake Vallante" width={682} height={1024}
                     className="w-full h-auto object-cover" unoptimized />
                 </div>
               </motion.div>
@@ -303,11 +304,13 @@ export default function HomePage() {
             ))}
           </motion.div>
 
-          {codingSection && codingSection.items.filter(i => i.type === 'image').length > 0 && (
+          <UnveilScreenshots />
+
+          {codingImages.length > 0 && (
             <div className="mt-16">
               <h3 className="text-xl font-bold text-[#326789]/80 mb-8">Project Screenshots</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {codingSection.items.filter(i => i.type === 'image').map((item, index) => (
+                {codingImages.map((item, index) => (
                   <motion.div key={index}
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -315,7 +318,7 @@ export default function HomePage() {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                     className="rounded-2xl overflow-hidden border border-[#326789]/8 shadow-sm"
                   >
-                    <img src={item.url} alt={item.alt} className="w-full h-auto" loading="lazy" />
+                    <Image src={item.url} alt={item.alt} width={item.width ?? 800} height={item.height ?? 600} className="w-full h-auto" />
                   </motion.div>
                 ))}
               </div>

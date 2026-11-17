@@ -1,7 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import SectionHeader from '@/components/SectionHeader';
+import type { GalleryItem } from '@/components/GalleryGrid';
+import UnveilScreenshots from '@/components/UnveilScreenshots';
 import portfolioData from '@/data/portfolio-data.json';
 import Link from 'next/link';
 
@@ -27,7 +30,8 @@ const CODING_PROJECTS = [
 ];
 
 export default function CodingPage() {
-    const section = portfolioData.sections.find((s) => s.slug === 'coding');
+    const codingImages: GalleryItem[] = portfolioData.sections.find((s) => s.slug === 'coding')
+        ?.items.filter((item) => item.type === 'image') ?? [];
 
     return (
         <div className="max-w-7xl mx-auto px-6 py-12">
@@ -75,13 +79,13 @@ export default function CodingPage() {
                 ))}
             </div>
 
-            {section && section.items.filter((i) => i.type === 'image').length > 0 && (
+            <UnveilScreenshots standalone />
+
+            {codingImages.length > 0 && (
                 <div className="mt-16">
                     <h2 className="text-2xl font-bold text-gray-900 mb-8">Project Screenshots</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {section.items
-                            .filter((i) => i.type === 'image')
-                            .map((item, index) => (
+                        {codingImages.map((item, index) => (
                                 <motion.div
                                     key={index}
                                     initial={{ opacity: 0, y: 20 }}
@@ -90,9 +94,11 @@ export default function CodingPage() {
                                     transition={{ duration: 0.5, delay: index * 0.1 }}
                                     className="rounded-xl overflow-hidden border border-gray-100 shadow-sm card-hover"
                                 >
-                                    <img
+                                    <Image
                                         src={item.url}
                                         alt={item.alt}
+                                        width={item.width ?? 800}
+                                        height={item.height ?? 600}
                                         className="w-full h-auto"
                                         loading="lazy"
                                     />

@@ -206,6 +206,8 @@ async function downloadSectionMedia(sectionData) {
                 originalUrl: img.src,
                 alt: img.alt,
                 filename,
+                width: img.width,
+                height: img.height,
             });
         } catch (err) {
             console.warn(`  ⚠️  Failed to download image: ${img.src} — ${err.message}`);

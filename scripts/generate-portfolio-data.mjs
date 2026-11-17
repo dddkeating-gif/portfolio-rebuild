@@ -26,6 +26,8 @@ const data = {
                     url: '/' + i.localPath.replace(/\\/g, '/'),
                     alt: i.alt || s.title,
                     filename: i.filename,
+                    width: i.width > 0 && i.height > 0 ? i.width : undefined,
+                    height: i.width > 0 && i.height > 0 ? i.height : undefined,
                 })),
                 ...(s.iframes || []).map((f, idx) => ({
                     type: 'video-embed',

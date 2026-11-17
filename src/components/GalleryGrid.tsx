@@ -4,11 +4,13 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface GalleryItem {
+export interface GalleryItem {
     type: string;
     url: string;
     alt: string;
     filename?: string;
+    width?: number;
+    height?: number;
 }
 
 interface GalleryGridProps {
@@ -45,8 +47,8 @@ export default function GalleryGrid({ items, columns = 3 }: GalleryGridProps) {
                                 <Image
                                     src={item.url}
                                     alt={item.alt}
-                                    width={800}
-                                    height={600}
+                                    width={item.width ?? 800}
+                                    height={item.height ?? 600}
                                     className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                                     loading="lazy"
                                     unoptimized
