@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/cocktail',
+        destination: 'https://cocktail-orb-catalogue.earthy-chicory.workers.dev/',
+        permanent: false,
+      },
+      {
         source: '/Verboten',
         destination: 'https://verboten.sortasora000.chatgpt.site/',
         permanent: false,
