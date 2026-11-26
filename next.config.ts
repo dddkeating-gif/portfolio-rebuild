@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/food',
+        destination: 'https://thejake-food.vercel.app/',
+        permanent: false,
+      },
+      {
         source: '/GTAVI',
         destination: 'https://gtavi-soundtrack.vercel.app/',
         permanent: false,
